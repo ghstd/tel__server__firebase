@@ -27,8 +27,8 @@ app.get('/', (req, res) => {
 // Add ==================================
 
 app.post('/dbAddUser', async (req, res) => {
-	const user = req.body
 	try {
+		const user = req.body
 		await setDoc(doc(db, 'users', `${user.id}`), {
 			id: user.id,
 			name: user.name,
@@ -42,12 +42,12 @@ app.post('/dbAddUser', async (req, res) => {
 })
 
 app.post('/dbAddSession', async (req, res) => {
-	const players = req.body
-
-	const sessionId = uuidv4()
-	const player_1Id = uuidv4()
-	const player_2Id = uuidv4()
 	try {
+		const players = req.body
+
+		const sessionId = uuidv4()
+		const player_1Id = uuidv4()
+		const player_2Id = uuidv4()
 		await setDoc(doc(db, 'sessions', `${sessionId}`), {
 			id: sessionId,
 			movesCount: 1,
@@ -80,8 +80,8 @@ app.post('/dbAddSession', async (req, res) => {
 // Get ==================================
 
 app.post('/dbGetSession', async (req, res) => {
-	const id = req.body
 	try {
+		const { id } = req.body
 		const sessionSnap = await getDoc(doc(db, 'sessions', `${id}`))
 		const session = sessionSnap.data()
 		const players = []
@@ -115,8 +115,8 @@ app.post('/dbGetAllUsers', async (req, res) => {
 })
 
 app.post('/dbGetUser', async (req, res) => {
-	const id = req.body
 	try {
+		const { id } = req.body
 		const docSnap = await getDoc(doc(db, 'users', `${id}`))
 		res.send(docSnap.data())
 	} catch (e) {
@@ -125,8 +125,8 @@ app.post('/dbGetUser', async (req, res) => {
 })
 
 app.post('/dbGetPlayerByUserId', async (req, res) => {
-	const id = req.body
 	try {
+		const { id } = req.body
 		const user = await dbGetUser(id)
 		const session = await dbGetSession(user.activeSession)
 		const sessionPlayer = session.players.find((player) => player.userId === id)
@@ -138,8 +138,8 @@ app.post('/dbGetPlayerByUserId', async (req, res) => {
 })
 
 app.post('/dbGetPlayer', async (req, res) => {
-	const id = req.body
 	try {
+		const { id } = req.body
 		const playerSnap = await getDoc(doc(db, 'players', `${id}`))
 		const player = playerSnap.data()
 
@@ -160,8 +160,8 @@ app.post('/dbGetPlayer', async (req, res) => {
 // Update ==================================
 
 app.post('/dbUpdateSessionMovesCount', async (req, res) => {
-	const { id, movesCount } = req.body
 	try {
+		const { id, movesCount } = req.body
 		await setDoc(doc(db, 'sessions', `${id}`), { movesCount }, { merge: true })
 		const result = await dbGetSession(id)
 		res.send(result)
@@ -171,8 +171,8 @@ app.post('/dbUpdateSessionMovesCount', async (req, res) => {
 })
 
 app.post('/dbUpdatePlayerField', async (req, res) => {
-	const { id, playerField } = req.body
 	try {
+		const { id, playerField } = req.body
 		await setDoc(doc(db, 'players', `${id}`), { playerField }, { merge: true })
 		const result = await dbGetPlayer(id)
 		res.send(result)
@@ -182,8 +182,8 @@ app.post('/dbUpdatePlayerField', async (req, res) => {
 })
 
 app.post('/dbUpdatePlayerTargetField', async (req, res) => {
-	const { id, targetField } = req.body
 	try {
+		const { id, targetField } = req.body
 		await setDoc(doc(db, 'players', `${id}`), { targetField }, { merge: true })
 		const result = await dbGetPlayer(id)
 		res.send(result)
@@ -193,8 +193,8 @@ app.post('/dbUpdatePlayerTargetField', async (req, res) => {
 })
 
 app.post('/dbUpdatePlayerReady', async (req, res) => {
-	const { id, ready } = req.body
 	try {
+		const { id, ready } = req.body
 		await setDoc(doc(db, 'players', `${id}`), { ready }, { merge: true })
 		const result = await dbGetPlayer(id)
 		res.send(result)
@@ -204,8 +204,8 @@ app.post('/dbUpdatePlayerReady', async (req, res) => {
 })
 
 app.post('/dbUpdateUser', async (req, res) => {
-	const { id, sessionId } = req.body
 	try {
+		const { id, sessionId } = req.body
 		const user = await dbGetUser(id)
 		user.activeSession = sessionId
 		user.sessions.push(sessionId)
@@ -219,8 +219,8 @@ app.post('/dbUpdateUser', async (req, res) => {
 // Delete ==================================
 
 app.post('/dbDeleteSessionFromUser', async (req, res) => {
-	const { id, sessionId } = req.body
 	try {
+		const { id, sessionId } = req.body
 		const user = await dbGetUser(id)
 		user.sessions = user.sessions.filter((sesId) => sesId !== sessionId)
 		user.activeSession = user.sessions[0] ? user.sessions[0] : null
@@ -232,8 +232,8 @@ app.post('/dbDeleteSessionFromUser', async (req, res) => {
 })
 
 app.post('/dbDeletePlayer', async (req, res) => {
-	const id = req.body
 	try {
+		const { id } = req.body
 		await deleteDoc(doc(db, 'players', `${id}`))
 		res.send('player deleted')
 	} catch (e) {
@@ -242,8 +242,8 @@ app.post('/dbDeletePlayer', async (req, res) => {
 })
 
 app.post('/dbDeleteSession', async (req, res) => {
-	const id = req.body
 	try {
+		const { id } = req.body
 		await deleteDoc(doc(db, 'sessions', `${id}`))
 		res.send('session deleted')
 	} catch (e) {
