@@ -216,6 +216,18 @@ app.post('/dbUpdateUser', async (req, res) => {
 	}
 })
 
+app.post('/dbUpdateUserActiveSession', async (req, res) => {
+	try {
+		const { id, sessionId } = req.body
+		const user = await dbGetUser(id)
+		user.activeSession = sessionId
+		await setDoc(doc(db, 'users', `${id}`), { activeSession: user.activeSession }, { merge: true })
+		res.send(user)
+	} catch (e) {
+		console.log('in db request: ', e)
+	}
+})
+
 // Delete ==================================
 
 app.post('/dbDeleteSessionFromUser', async (req, res) => {
