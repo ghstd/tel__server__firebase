@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import { v4 as uuidv4 } from 'uuid'
 import { initializeApp } from "firebase/app"
 import { deleteDoc, doc, getFirestore, setDoc } from "firebase/firestore"
@@ -18,6 +19,7 @@ const firebaseConfig = {
 const fireBaseApp = initializeApp(firebaseConfig)
 const db = getFirestore(fireBaseApp)
 
+app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
