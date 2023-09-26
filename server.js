@@ -35,7 +35,7 @@ app.post('/dbAddUser', async (req, res) => {
 			sessions: [],
 			activeSession: null
 		})
-		res.send('user added')
+		res.send({ status: true })
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
@@ -237,7 +237,7 @@ app.post('/dbDeleteSessionFromUser', async (req, res) => {
 		user.sessions = user.sessions.filter((sesId) => sesId !== sessionId)
 		user.activeSession = user.sessions[0] ? user.sessions[0] : null
 		await setDoc(doc(db, 'users', `${id}`), { sessions: user.sessions, activeSession: user.activeSession }, { merge: true })
-		res.send('session deleted from user')
+		res.send({ status: true })
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
@@ -247,7 +247,7 @@ app.post('/dbDeletePlayer', async (req, res) => {
 	try {
 		const { id } = req.body
 		await deleteDoc(doc(db, 'players', `${id}`))
-		res.send('player deleted')
+		res.send({ status: true })
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
@@ -257,7 +257,7 @@ app.post('/dbDeleteSession', async (req, res) => {
 	try {
 		const { id } = req.body
 		await deleteDoc(doc(db, 'sessions', `${id}`))
-		res.send('session deleted')
+		res.send({ status: true })
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
