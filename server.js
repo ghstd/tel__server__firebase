@@ -37,6 +37,7 @@ app.post('/dbAddUser', async (req, res) => {
 			sessions: [],
 			activeSession: null
 		})
+		res.send({ status: 'ok' })
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
