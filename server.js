@@ -37,8 +37,6 @@ app.post('/dbAddUser', async (req, res) => {
 			sessions: [],
 			activeSession: null
 		})
-		res.setHeader("Content-Type", "application/json")
-		res.send(JSON.stringify({ status: true }))
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
