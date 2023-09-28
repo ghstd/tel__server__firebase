@@ -151,13 +151,9 @@ app.post('/dbGetPlayerByUserId', async (req, res) => {
 	try {
 		const { id } = req.body
 		const user = await dbGetUser(id)
-		console.log('user', user)
 		const session = await dbGetSession(user.activeSession)
-		console.log('session', session)
-		const sessionPlayer = session.players.find((player) => player.userId === id)
-		console.log('sessionPlayer', sessionPlayer)
+		const sessionPlayer = session.players.find((player) => player.userId == id)
 		const player = await dbGetPlayer(sessionPlayer.id)
-		console.log('player', player)
 		res.send(player)
 	} catch (e) {
 		console.log('in db request: ', e)
