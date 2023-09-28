@@ -73,7 +73,8 @@ app.post('/dbAddSession', async (req, res) => {
 		})
 
 		const addedSession = await dbGetSession(sessionId)
-		res.send(addedSession)
+		console.log(addedSession)
+		res.send('dbAddSession', addedSession)
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
@@ -97,6 +98,7 @@ app.post('/dbGetSession', async (req, res) => {
 				targetField: JSON.parse(player.targetField)
 			})
 		})
+		console.log('dbGetSession', { ...session, players })
 		res.send({ ...session, players })
 	} catch (e) {
 		console.log('in db request: ', e)
