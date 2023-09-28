@@ -29,8 +29,8 @@ app.get('/', (req, res) => {
 // Add ==================================
 
 app.post('/dbAddUser', async (req, res) => {
+	const user = req.body
 	try {
-		const user = req.body
 		await setDoc(doc(db, 'users', `${user.id}`), {
 			id: user.id,
 			name: user.name,
@@ -50,6 +50,7 @@ app.post('/dbAddSession', async (req, res) => {
 		const sessionId = uuidv4()
 		const player_1Id = uuidv4()
 		const player_2Id = uuidv4()
+
 		await setDoc(doc(db, 'sessions', `${sessionId}`), {
 			id: sessionId,
 			movesCount: 1,
@@ -73,8 +74,7 @@ app.post('/dbAddSession', async (req, res) => {
 		})
 
 		const addedSession = await dbGetSession(sessionId)
-		console.log(addedSession)
-		res.send('dbAddSession', addedSession)
+		res.send(addedSession)
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
@@ -82,9 +82,8 @@ app.post('/dbAddSession', async (req, res) => {
 
 // Get ==================================
 
-app.post('/dbGetSession', async (req, res) => {
+async function dbGetSession(id) {
 	try {
-		const { id } = req.body
 		const sessionSnap = await getDoc(doc(db, 'sessions', `${id}`))
 		const session = sessionSnap.data()
 		const players = []
@@ -98,8 +97,17 @@ app.post('/dbGetSession', async (req, res) => {
 				targetField: JSON.parse(player.targetField)
 			})
 		})
-		console.log('dbGetSession', { ...session, players })
-		res.send({ ...session, players })
+		return { ...session, players }
+	} catch (e) {
+		console.log('in db request: ', e)
+	}
+}
+
+app.post('/dbGetSession', async (req, res) => {
+	try {
+		const { id } = req.body
+		const result = await dbGetSession(id)
+		res.send(result)
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
@@ -118,14 +126,23 @@ app.post('/dbGetAllUsers', async (req, res) => {
 	}
 })
 
-app.post('/dbGetUser', async (req, res) => {
+async function dbGetUser(id) {
 	try {
-		const { id } = req.body
 		const docSnap = await getDoc(doc(db, 'users', `${id}`))
 		const data = docSnap.data()
 		const result = data ? data : { data: null }
-		res.send(result)
+		return result
 	} catch (e) {
+		console.log('in db request: ', e)
+	}
+}
+
+app.post('/dbGetUser', async (req, res) => {
+	try {
+		const { id } = req.body
+		const result = await dbGetUser(id)
+		res.send(result)
+	} catch (error) {
 		console.log('in db request: ', e)
 	}
 })
@@ -143,22 +160,31 @@ app.post('/dbGetPlayerByUserId', async (req, res) => {
 	}
 })
 
-app.post('/dbGetPlayer', async (req, res) => {
+async function dbGetPlayer(id) {
 	try {
-		const { id } = req.body
 		const playerSnap = await getDoc(doc(db, 'players', `${id}`))
 		const player = playerSnap.data()
 
 		const sessionSnap = await getDoc(doc(db, 'sessions', `${player.session}`))
 		const session = sessionSnap.data()
 
-		res.send({
+		return {
 			...player
 			, session,
 			playerField: JSON.parse(player.playerField),
 			targetField: JSON.parse(player.targetField)
-		})
+		}
 	} catch (e) {
+		console.log('in db request: ', e)
+	}
+}
+
+app.post('/dbGetPlayer', async (req, res) => {
+	try {
+		const { id } = req.body
+		const result = await dbGetPlayer(id)
+		res.send(result)
+	} catch (error) {
 		console.log('in db request: ', e)
 	}
 })
