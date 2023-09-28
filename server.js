@@ -60,16 +60,16 @@ app.post('/dbAddSession', async (req, res) => {
 			...players[0],
 			id: player_1Id,
 			session: sessionId,
-			playerField: JSON.stringify(players[0].playerField),
-			targetField: JSON.stringify(players[0].targetField)
+			// playerField: JSON.stringify(players[0].playerField),
+			// targetField: JSON.stringify(players[0].targetField)
 		})
 
 		await setDoc(doc(db, 'players', `${player_2Id}`), {
 			...players[1],
 			id: player_2Id,
 			session: sessionId,
-			playerField: JSON.stringify(players[1].playerField),
-			targetField: JSON.stringify(players[1].targetField)
+			// playerField: JSON.stringify(players[1].playerField),
+			// targetField: JSON.stringify(players[1].targetField)
 		})
 
 		const addedSession = await dbGetSession(sessionId)
