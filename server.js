@@ -120,7 +120,9 @@ app.post('/dbGetUser', async (req, res) => {
 	try {
 		const { id } = req.body
 		const docSnap = await getDoc(doc(db, 'users', `${id}`))
-		res.send(docSnap.data())
+		const data = docSnap.data()
+		const result = data ? data : { data: null }
+		res.send(result)
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
