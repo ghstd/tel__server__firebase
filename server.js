@@ -88,15 +88,18 @@ async function dbGetSession(id) {
 		const session = sessionSnap.data()
 		const players = []
 
-		session.players.forEach(async (id) => {
-			const playerSnap = await getDoc(doc(db, 'players', `${id}`))
-			const player = playerSnap.data()
-			players.push({
-				...player,
-				playerField: JSON.parse(player.playerField),
-				targetField: JSON.parse(player.targetField)
-			})
-		})
+		await Promise.all(session.players.map((id) => {
+			async function waitFn() {
+				const playerSnap = await getDoc(doc(db, 'players', `${id}`))
+				const player = playerSnap.data()
+				players.push({
+					...player,
+					playerField: JSON.parse(player.playerField),
+					targetField: JSON.parse(player.targetField)
+				})
+			}
+			return waitFn()
+		}))
 		return { ...session, players }
 	} catch (e) {
 		console.log('in db request: ', e)
