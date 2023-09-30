@@ -86,6 +86,9 @@ async function dbGetSession(id) {
 	try {
 		const sessionSnap = await getDoc(doc(db, 'sessions', `${id}`))
 		const session = sessionSnap.data()
+		if (!session) {
+			return null
+		}
 		const players = []
 
 		await Promise.all(session.players.map((id) => {
@@ -110,9 +113,13 @@ app.post('/dbGetSession', async (req, res) => {
 	try {
 		const { id } = req.body
 		const result = await dbGetSession(id)
-		res.send(result)
+		if (!result) {
+			res.send({ data: null })
+		} else {
+			res.send(result)
+		}
 	} catch (e) {
-		console.log('in db request: ', e)
+		console.log('in dbGetSession: ', e)
 	}
 })
 
