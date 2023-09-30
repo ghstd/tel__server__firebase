@@ -162,6 +162,9 @@ app.post('/dbGetPlayerByUserId', async (req, res) => {
 		const { id } = req.body
 		const user = await dbGetUser(id)
 		const session = await dbGetSession(user.activeSession)
+		if (!session) {
+			res.send({ data: null })
+		}
 		const sessionPlayer = session.players.find((player) => player.userId == id)
 		const player = await dbGetPlayer(sessionPlayer.id)
 		res.send(player)
