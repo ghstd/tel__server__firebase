@@ -88,7 +88,7 @@ async function dbGetSession(id) {
 		const session = sessionSnap.data()
 		const players = []
 
-		await Promise.all(session.players.map((id) => {
+		const promiseAllResult = await Promise.all(session.players.map((id) => {
 			async function waitFn() {
 				const playerSnap = await getDoc(doc(db, 'players', `${id}`))
 				const player = playerSnap.data()
@@ -100,9 +100,10 @@ async function dbGetSession(id) {
 			}
 			return waitFn()
 		}))
+		console.log('promiseAllResult: ', promiseAllResult)
 		return { ...session, players }
 	} catch (e) {
-		console.log('in db request: ', e)
+		console.log('in dbGetSession: ', e)
 	}
 }
 
