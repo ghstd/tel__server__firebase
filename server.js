@@ -115,6 +115,7 @@ app.post('/dbGetSession', async (req, res) => {
 		const result = await dbGetSession(id)
 		if (!result) {
 			res.send({ data: null })
+			return
 		} else {
 			res.send(result)
 		}
@@ -164,6 +165,7 @@ app.post('/dbGetPlayerByUserId', async (req, res) => {
 		const session = await dbGetSession(user.activeSession)
 		if (!session) {
 			res.send({ data: null })
+			return
 		}
 		const sessionPlayer = session.players.find((player) => player.userId == id)
 		const player = await dbGetPlayer(sessionPlayer.id)
