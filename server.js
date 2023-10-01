@@ -86,9 +86,9 @@ async function dbGetSession(id) {
 	try {
 		const sessionSnap = await getDoc(doc(db, 'sessions', `${id}`))
 		const session = sessionSnap.data()
-		if (!session) {
-			return null
-		}
+		// if (!session) {
+		// 	return null
+		// }
 		const players = []
 
 		await Promise.all(session.players.map((id) => {
@@ -113,12 +113,11 @@ app.post('/dbGetSession', async (req, res) => {
 	try {
 		const { id } = req.body
 		const result = await dbGetSession(id)
-		if (!result) {
-			res.send({ data: null })
-			return
-		} else {
-			res.send(result)
-		}
+		// if (!result) {
+		// 	res.send({ data: null })
+		// 	return
+		// }
+		res.send(result)
 	} catch (e) {
 		console.log('in dbGetSession: ', e)
 	}
@@ -141,8 +140,10 @@ async function dbGetUser(id) {
 	try {
 		const docSnap = await getDoc(doc(db, 'users', `${id}`))
 		const data = docSnap.data()
-		const result = data ? data : { data: null }
-		return result
+		// if(!data) {
+		// 	return { data: null }
+		// }
+		return data
 	} catch (e) {
 		console.log('in db request: ', e)
 	}
@@ -163,16 +164,16 @@ app.post('/dbGetPlayerByUserId', async (req, res) => {
 		const { id } = req.body
 		const user = await dbGetUser(id)
 		const session = await dbGetSession(user.activeSession)
-		if (!session) {
-			res.send({ data: null, target: 'session' })
-			return
-		}
+		// if (!session) {
+		// 	res.send({ data: null, target: 'session' })
+		// 	return
+		// }
 		const sessionPlayer = session.players.find((player) => player.userId == id)
 		const player = await dbGetPlayer(sessionPlayer.id)
-		if (!player) {
-			res.send({ data: null, target: 'player' })
-			return
-		}
+		// if (!player) {
+		// 	res.send({ data: null, target: 'player' })
+		// 	return
+		// }
 
 		res.send(player)
 	} catch (e) {
@@ -184,9 +185,9 @@ async function dbGetPlayer(id) {
 	try {
 		const playerSnap = await getDoc(doc(db, 'players', `${id}`))
 		const player = playerSnap.data()
-		if (!player) {
-			return null
-		}
+		// if (!player) {
+		// 	return null
+		// }
 
 		const sessionSnap = await getDoc(doc(db, 'sessions', `${player.session}`))
 		const session = sessionSnap.data()
@@ -206,10 +207,10 @@ app.post('/dbGetPlayer', async (req, res) => {
 	try {
 		const { id } = req.body
 		const result = await dbGetPlayer(id)
-		if (!result) {
-			res.send({ data: null })
-			return
-		}
+		// if (!result) {
+		// 	res.send({ data: null })
+		// 	return
+		// }
 
 		res.send(result)
 	} catch (error) {
