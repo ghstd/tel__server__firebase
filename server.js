@@ -164,11 +164,16 @@ app.post('/dbGetPlayerByUserId', async (req, res) => {
 		const user = await dbGetUser(id)
 		const session = await dbGetSession(user.activeSession)
 		if (!session) {
-			res.send({ data: null })
+			res.send({ data: null, target: 'session' })
 			return
 		}
 		const sessionPlayer = session.players.find((player) => player.userId == id)
 		const player = await dbGetPlayer(sessionPlayer.id)
+		if (!player) {
+			res.send({ data: null, target: 'player' })
+			return
+		}
+
 		res.send(player)
 	} catch (e) {
 		console.log('in db request: ', e)
@@ -179,6 +184,9 @@ async function dbGetPlayer(id) {
 	try {
 		const playerSnap = await getDoc(doc(db, 'players', `${id}`))
 		const player = playerSnap.data()
+		if (!player) {
+			return null
+		}
 
 		const sessionSnap = await getDoc(doc(db, 'sessions', `${player.session}`))
 		const session = sessionSnap.data()
@@ -198,6 +206,11 @@ app.post('/dbGetPlayer', async (req, res) => {
 	try {
 		const { id } = req.body
 		const result = await dbGetPlayer(id)
+		if (!result) {
+			res.send({ data: null })
+			return
+		}
+
 		res.send(result)
 	} catch (error) {
 		console.log('in db request: ', e)
