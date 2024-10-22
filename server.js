@@ -9,12 +9,12 @@ const app = express()
 const port = 3000
 
 const firebaseConfig = {
-	apiKey: 'AIzaSyCGnldTTzX4B7iX3VjSxqR7uermqn5igHc',
-	authDomain: "tebot-db.firebaseapp.com",
-	projectId: "tebot-db",
-	storageBucket: "tebot-db.appspot.com",
-	messagingSenderId: "521819380591",
-	appId: "1:521819380591:web:6e2c31fcf65ac6235ce69a"
+	apiKey: process.env.API_KEY,
+	authDomain: process.env.AUTH_DOMAIN,
+	projectId: process.env.PROJECT_ID,
+	storageBucket: process.env.STORAGE_BUCKET,
+	messagingSenderId: process.env.MESSAGING_SENDER_ID,
+	appId: process.env.APP_ID
 }
 const fireBaseApp = initializeApp(firebaseConfig)
 const db = getFirestore(fireBaseApp)
